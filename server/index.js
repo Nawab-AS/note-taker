@@ -1,5 +1,5 @@
 const express = require("express");
-const { Server } = require('socket.io');
+const { Server } = require('socket.io'); // TODO: add socket.io functionality
 const { createServer } = require('http');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -7,7 +7,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 
 app.use('/', require('./router')); // delegate routing to router.js
 
