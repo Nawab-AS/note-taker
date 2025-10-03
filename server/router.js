@@ -26,15 +26,8 @@ function createAuthToken(data, res){
   res.cookie("authToken", data, cookieOptions);
 }
 
-function getAuthData(req, res){
-	const token = req.signedCookies.authToken;
-	console.log("Token:", token);
-	// if (!token) {
-	// 	res.clearCookie("authToken");
-	// 	return false;
-	// }
-
-	return token;
+function getAuthData(req){
+	return req.signedCookies.authToken;
 }
 
 
@@ -47,7 +40,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 const redirectToLogin = (req, res, next) => {
-  if (!getAuthData(req, res)) {
+  if (!getAuthData(req)) {
     res.redirect("/login");
   } else {
     next();
@@ -55,7 +48,7 @@ const redirectToLogin = (req, res, next) => {
 };
 
 const redirectToHome = (req, res, next) => {
-  if (getAuthData(req, res)) {
+  if (getAuthData(req)) {
     res.redirect("/home");
   } else {
     next();
