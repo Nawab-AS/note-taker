@@ -8,33 +8,42 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <!-- Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
+    
+    <script src="home/recorder.js" defer></script>
     <script src="home/index.js" defer></script>
     <link rel="stylesheet" href="home/styles.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Note Taker</h1>
-        <h1>Howdy, {{ username }}</h1>
+    <header>
+        <h3>Note Taker</h3>
+        <h3>
+            Howdy, 
+            <span class="username">{{ username }}</span>
+            <img src="images/pfp.svg">
+        </h3>
+    </header>
+    <div class="island">
+        <div class="container">
+            <!--
+            <h1>Select a Notebook</h1>
+            <ul>
+                <li v-for="notebook in notebooks" :key="notebook.id">
+                    <button class="notebook-btn" @click="openNotebook(notebook)">
+                        {{ notebook.name }}
+                    </button>
+                </li>
+                <li v-if="notebooks.length === 0" style="text-align:center; color:#888;">
+                    No notebooks yet.
+                </li>
+            </ul>
+            <form class="add-section" @submit.prevent="addNotebook">
+                <input v-model="newNotebook" type="text" placeholder="New notebook name" required>
+                <button type="submit">Add</button>
+            </form>
+            -->
+            <button v-if="!isRecording" onclick="startRecording()">Start Recording</button>
+            <button v-else onclick="stopRecording()">Stop Recording</button>
+        </div>
     </div>
-    <div class="container">
-        <h1>Select a Notebook</h1>
-        <ul>
-            <li v-for="notebook in notebooks" :key="notebook.id">
-                <button class="notebook-btn" @click="openNotebook(notebook)">
-                    {{ notebook.name }}
-                </button>
-            </li>
-            <li v-if="notebooks.length === 0" style="text-align:center; color:#888;">
-                No notebooks yet.
-            </li>
-        </ul>
-        <form class="add-section" @submit.prevent="addNotebook">
-            <input v-model="newNotebook" type="text" placeholder="New notebook name" required>
-            <button type="submit">Add</button>
-        </form>
-    </div>
-
-    <button onclick="startRecording()">Start Recording</button>
-    <button onclick="stopRecording()">Stop Recording</button>
 </body>
 </html>

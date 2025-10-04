@@ -10,14 +10,28 @@ module.exports = function(app) {
         console.log('a user connected');
 
         socket.on('audio-blob', (buffer) =>{
-            const audioPath = path.join(__dirname, '..', 'tempAudio', `audio|${socket.id}|${Date.now()}.webm`);
+            // Save audio blob to a file
+            const audioPath = path.join(__dirname, '..', 'tempAudio', `audio-${socket.id}-${Date.now()}.webm`);
             fs.writeFileSync(audioPath, Buffer.from(buffer));
             console.log(`Saved audio blob to ${audioPath}`);
 
             // Transcribe audio
-            transcribeAudio(audioPath).then(transcription => {
+            /*transcribeAudio(audioPath).then((transcription) => {
                 console.log('Transcription:', transcription);
-            });
+                */
+                // delete the temporary audio file
+                // fs.unlink(audioPath, (err) => {
+                //     if (err) {
+                //         console.error(`Error deleting file ${audioPath}:`, err);
+                //     } else {
+                //         console.log(`Deleted temporary file ${audioPath}`);
+                //     }
+                // });
+                /*
+            });*/
+            console.log("Audio received");
+
+
 
         socket.on('disconnect', () => {
             console.log('user disconnected');

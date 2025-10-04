@@ -19,7 +19,7 @@ if (SESSION_SECRET == undefined) throw new Error("No session secret set");
 
 const cookieOptions = {
   signed: true,
-  maxAge: 60 * 60 * 24 * 3 // 3 days -> s
+  maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days -> ms
 };
 
 function createAuthToken(data, res){
