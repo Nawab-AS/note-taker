@@ -2,7 +2,8 @@ const { createApp, ref } = Vue;
 
 quietnessThreshold = 0.10;
 const isRecording = ref(false);
-const username = ref("Nawab-AS")
+const username = ref("Nawab-AS");
+const audioURLs = ref([]);
 
 
 // socket.io client setup
@@ -28,14 +29,15 @@ async function startRecording() {
             return;
         });
 
-    setupMicRecorder((audioChunks) => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+    startMicRecorder((audioBlob) => {
+        audioURLs.value.push(URL.createObjectURL(audioBlob));
+
+        // send audio blob to server
         audioBlob.arrayBuffer().then(buffer => {
+            // blobs must be converted to ArrayBuffers before sending to server
             socket.emit('audio-blob', buffer);
         });
     });
-    
-    console.log('Recording started');
 }
 
 function stopRecording() {
@@ -54,6 +56,7 @@ createApp({
             startRecording,
             stopRecording,
             username,
+            audioURLs,
         };
     }
 }).mount('body');

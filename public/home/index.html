@@ -5,7 +5,7 @@
     <title>Note Taker - Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Vue.js CDN -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
     
@@ -43,6 +43,16 @@
             -->
             <button v-if="!isRecording" onclick="startRecording()">Start Recording</button>
             <button v-else onclick="stopRecording()">Stop Recording</button>
+
+            <div>
+                <h2>Recorded Audio Clips</h2>
+                <ul>
+                    <li v-for="(url, index) in audioURLs" :key="index">
+                        <p>Clip {{ index + 1 }}</p>
+                        <audio :src="url" controls></audio>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </body>
