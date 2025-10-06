@@ -1,4 +1,4 @@
-const _intervalDuration = 27.5 * 1000;
+const _intervalDuration = 10 * 1000; // 10 seconds
 
 // can be adjusted from UI
 let QUIETNESS_DURATION = {stop: 10, start: 3}; // in frames
