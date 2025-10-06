@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login/styles.css">
     <title>Login</title>
+    <script src="login/index.js"></script>
 </head>
 <body>
     <h1>Note Taker</h1>
     <div class="form">
         <form action="/login" method="POST">
             <h2>Login</h2>
+            <p id="error"></p>
             <h3>Username</h3>
             <input type="text" id="username" name="username" required autocorrect="off">
             <h3>Password</h3>
             <input type="password" id="password" name="password" required autocorrect="off">
             <button type="submit">Login</button>
+            <h4>Don't have an account? <a href="/register">Register</a></h4>
         </form>
     </div>
 

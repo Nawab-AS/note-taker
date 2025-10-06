@@ -18,7 +18,7 @@ module.exports = function(app) {
 
             // Transcribe audio
             transcribeAudio(audioPath).then((transcription) => {
-                console.log('Transcription:', transcription);
+                socket.emit('transcription', transcription);
                 // delete the temporary audio file
                 fs.unlink(audioPath, (err) => {
                     if (err) {

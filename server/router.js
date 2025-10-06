@@ -18,15 +18,16 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 if (SESSION_SECRET == undefined) throw new Error("No session secret set");
 
 const cookieOptions = {
-  signed: true,
-  maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days -> ms
+	signed: true,
+	HttpOnly: true,
+	maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days -> ms
 };
 
-function createAuthToken(data, res){
-  res.cookie("authToken", data, cookieOptions);
+function createAuthToken(data, res) {
+	res.cookie("authToken", data, cookieOptions);
 }
 
-function getAuthData(req){
+function getAuthData(req) {
 	return req.signedCookies.authToken;
 }
 
@@ -40,19 +41,19 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 const redirectToLogin = (req, res, next) => {
-  if (!getAuthData(req)) {
-    res.redirect("/login");
-  } else {
-    next();
-  }
+	if (!getAuthData(req)) {
+		res.redirect("/login");
+	} else {
+		next();
+	}
 };
 
 const redirectToHome = (req, res, next) => {
-  if (getAuthData(req)) {
-    res.redirect("/home");
-  } else {
-    next();
-  }
+	if (getAuthData(req)) {
+		res.redirect("/home");
+	} else {
+		next();
+	}
 };
 
 
@@ -71,6 +72,10 @@ router.get('/login', redirectToHome, (req, res) => {
 	res.sendFile(joinPath(__publicDirname, "login", "index.html"));
 });
 
+router.get('/register', redirectToHome, (req, res) => {
+	res.sendFile(joinPath(__publicDirname, "register", "index.html"));
+});
+
 
 router.get('/home', redirectToLogin, (req, res) => {
 	res.sendFile(joinPath(__publicDirname, "home", "index.html"));
@@ -81,15 +86,44 @@ router.get('/home', redirectToLogin, (req, res) => {
 
 // Login route
 router.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  if (username !== 'user' || password !== 'password') {
-    return res.redirect('/login?error=Invalid%20credentials');
-  }
+	const { username, password } = req.body;
+	if (username !== 'user' || password !== 'password') {
+		return res.redirect('/login?error=Invalid%20credentials');
+	}
 
-  // Create auth token and set as cookie
-  createAuthToken({ username }, res);
-  res.redirect('/home');
+	// Create auth token and set as cookie
+	createAuthToken({ username }, res);
+	res.redirect('/home');
 });
+
+
+// Logout route
+router.post('/logout', (req, res) => {
+	res.clearCookie('authToken');
+	res.redirect('/');
+});
+
+
+// register route
+router.post('/register', (req, res) => {
+	const { username, password } = req.body;
+	if (!validateSignupData(username, password)) {
+		return res.redirect('/register?error=Invalid%20input');
+	}
+
+	createAuthToken({ username }, res);
+	res.cookie('username', username, { maxAge: 1000 * 60 * 60 * 24 * 3 }); // 3 days
+	res.redirect('/home');
+});
+
+function validateSignupData(username, password) {
+	if (!username) return false;
+	if (username.length < 7) return false;
+	if (!password) return false;
+	if (password.length < 6) return false;
+
+	return true;
+}
 
 
 // serve static files from public directory

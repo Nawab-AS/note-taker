@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="register/styles.css">
+	<title>Register</title>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+	<script defer src="register/index.js"></script>
+</head>
+<body>
+	<h1>Note Taker</h1>
+	<div class="form">
+		<form @submit.prevent="validateAndSubmit" method="POST" id="form">
+			<h2>Register</h2>
+			<p id="error">{{ error }}</p>
+			<h3>Username</h3>
+			<input type="text" id="username" name="username" v-model="username" autocorrect="off" required>
+			<h3>Password</h3>
+			<input type="password" id="password" name="password" v-model="password" autocorrect="off" required>
+			<h3>Confirm Password</h3>
+			<input type="password" id="confirm_password" name="confirm_password" v-model="confirmPassword" autocorrect="off" required>
+			<button type="submit">Register</button>
+			<h4>Already have an account? <a href="/login">Login</a></h4>
+		</form>
+	</div>
+
+	<footer>
+		<h4>&copy; 2025 Note Taker, created by <a href="https://github.com/Nawab-AS">Nawab-AS</a>. All rights reserved.</h4>
+	</footer>
+</body>
+</html>

@@ -19,6 +19,14 @@ body {
     width: 30%;
 }
 
+p#error {
+    color: #ff4c4c;
+    font-size: 0.9rem;
+    height: 1.2rem;
+    margin: 0;
+    margin-bottom: 0.5rem;
+}
+
 h1 {
     font-size: 2.8rem;
     margin-bottom: 2rem;
@@ -27,11 +35,23 @@ h1 {
 }
 
 h2 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     color: #61dafb;
     font-size: 1.5rem;
     letter-spacing: 1px;
     cursor: default;
+}
+
+.form h4 {
+    margin: 0px;
+    font-size: 0.9rem;
+    color: #bdbdbd;
+    font-weight: bold;
+}
+
+h4 a {
+    color: #05a103;
+    text-decoration: none;
 }
 
 form {
@@ -96,11 +116,9 @@ button:hover {
 
 footer {
     background-color: #0f0f0f;
-    position: absolute;
-    bottom: 0px;
     height: 2rem;
     padding: 0px;
-    margin: 0px;
+    margin-top: 30px;
     width: 100%;
     text-align: center;
     font-size: 0.9rem;

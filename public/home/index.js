@@ -1,9 +1,24 @@
-const { createApp, ref } = Vue;
+const { createApp, ref, watch } = Vue;
 
 quietnessThreshold = 0.10;
 const isRecording = ref(false);
-const username = ref("Nawab-AS");
-const audioURLs = ref([]);
+//const audioURLs = ref([]);  // for testing
+const transcript = ref("");
+
+
+const coins = ref(100);
+if (localStorage.getItem('coins')) {
+    coins.value = parseInt(localStorage.getItem('coins'));
+}
+watch(coins, (newVal) => {
+    localStorage.setItem('coins', newVal);
+
+    if (newVal <= 0) {
+        stopRecording();
+    }
+});
+
+const username = ref(new URLSearchParams(window.location.search).get('user') || "User");
 
 
 // socket.io client setup
@@ -14,6 +29,18 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
     console.log('Disconnected from server');
+});
+
+socket.on('transcription', (text) => {
+    console.log('Received transcription:', text);
+    transcript.value += text + " ";
+
+    let newCoins = coins.value - text.split(' ').length;
+    if (newCoins < 0) {
+        coins.value = 0;
+    } else {
+        coins.value = newCoins;
+    }
 });
 
 
@@ -30,7 +57,7 @@ async function startRecording() {
         });
 
     startMicRecorder((audioBlob) => {
-        audioURLs.value.push(URL.createObjectURL(audioBlob));
+        //audioURLs.value.push(URL.createObjectURL(audioBlob)); // for testing
 
         // send audio blob to server
         audioBlob.arrayBuffer().then(buffer => {
@@ -56,7 +83,9 @@ createApp({
             startRecording,
             stopRecording,
             username,
-            audioURLs,
+            //audioURLs,
+            transcript,
+            coins,
         };
     }
 }).mount('body');
