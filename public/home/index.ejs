@@ -8,6 +8,11 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const username = "<%- username %>";
+        const initialCoins = <%- coins %>;
+    </script>
     
     <script src="home/recorder.js" defer></script>
     <script src="home/index.js" defer></script>
@@ -16,7 +21,7 @@
 <body>
     <header>
         <h3>Note Taker</h3>
-        <h3 class="coins">{{ coins }} coin<span v-if="coins !== 1">s</span>&nbsp; left</h3>
+        <h3 class="coins">{{ coins }} coin<span v-if="coins !== 1">s</span>&nbsp;left</h3>
         <h3>
             Howdy, 
             <span class="username">{{ username }}</span>
@@ -48,7 +53,7 @@
 
             <div class="transcript">
                 <h2>Transcript</h2>
-                <textarea readonly placeholder="start recording to transcribe audio">{{ transcript }}</textarea>
+                <textarea placeholder="start recording to transcribe audio">{{ transcript }}</textarea>
             </div>
         </div>
     </div>

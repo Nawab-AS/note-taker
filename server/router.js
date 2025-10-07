@@ -8,6 +8,7 @@ const { join: joinPath } = require("path");
 const { existsSync } = require("fs");
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const { registerUser, validateLogin, getUserCoins } = require('./database');
 
 require('dotenv').config();
 
@@ -63,7 +64,6 @@ const redirectToHome = (req, res, next) => {
 
 const __publicDirname = joinPath(__dirname, "..", "public");
 
-
 router.get('/', redirectToHome, (req, res) => {
 	res.sendFile(joinPath(__publicDirname, "landing", "index.html"));
 });
@@ -77,23 +77,32 @@ router.get('/register', redirectToHome, (req, res) => {
 });
 
 
-router.get('/home', redirectToLogin, (req, res) => {
-	res.sendFile(joinPath(__publicDirname, "home", "index.html"));
+router.get('/home', redirectToLogin, async (req, res) => {
+	const username = getAuthData(req).username;
+	const userCoins = await getUserCoins(username);
+	res.render('home/index', {username: username, coins: userCoins});
 });
 
 
 
 
 // Login route
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
 	const { username, password } = req.body;
-	if (username !== 'user' || password !== 'password') {
-		return res.redirect('/login?error=Invalid%20credentials');
-	}
 
-	// Create auth token and set as cookie
-	createAuthToken({ username }, res);
-	res.redirect('/home');
+	try {
+		const isValid = await validateLogin(username, password);
+		if (!isValid) {
+			return res.redirect('/login?error=Invalid%20credentials');
+		}
+
+		// Create auth token and set as cookie
+		createAuthToken({ username }, res);
+		res.redirect('/home');
+	} catch (error) {
+		console.error('Error during login:', error);
+		res.redirect('/login?error=Server%20error');
+	}
 });
 
 
@@ -105,15 +114,25 @@ router.post('/logout', (req, res) => {
 
 
 // register route
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
 	const { username, password } = req.body;
+
 	if (!validateSignupData(username, password)) {
 		return res.redirect('/register?error=Invalid%20input');
 	}
 
-	createAuthToken({ username }, res);
-	res.cookie('username', username, { maxAge: 1000 * 60 * 60 * 24 * 3 }); // 3 days
-	res.redirect('/home');
+	try {
+		await registerUser(username, password);
+		createAuthToken({ username }, res);
+		res.cookie('username', username, { maxAge: 1000 * 60 * 60 * 24 * 3 }); // 3 days
+		res.redirect('/home');
+	} catch (error) {
+		if (error.message === 'Username already exists') {
+			return res.redirect('/register?error=Username%20already%20exists');
+		}
+		console.error('Error during registration:', error);
+		res.redirect('/register?error=Internal%20server%20error');
+	}
 });
 
 function validateSignupData(username, password) {
@@ -142,5 +161,10 @@ router.use(function (req, res) {
 });
 
 
+function setupEJS(app) {
+	app.set('view engine', 'ejs');
+	app.set('views', __publicDirname);
+}
+
 // export the router
-module.exports = router;
+module.exports = { router, setupEJS };

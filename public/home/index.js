@@ -4,21 +4,7 @@ quietnessThreshold = 0.10;
 const isRecording = ref(false);
 //const audioURLs = ref([]);  // for testing
 const transcript = ref("");
-
-
-const coins = ref(100);
-if (localStorage.getItem('coins')) {
-    coins.value = parseInt(localStorage.getItem('coins'));
-}
-watch(coins, (newVal) => {
-    localStorage.setItem('coins', newVal);
-
-    if (newVal <= 0) {
-        stopRecording();
-    }
-});
-
-const username = ref(new URLSearchParams(window.location.search).get('user') || "User");
+const coins = ref(initialCoins);
 
 
 // socket.io client setup
