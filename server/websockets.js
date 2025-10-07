@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const { validateLogin, updateUserCoins } = require('./database.js');
+const { updateUserCoins } = require('./database.js');
 const fs = require('fs');
 const path = require('path');
 const { transcribeAudio } = require('./openAI.js');

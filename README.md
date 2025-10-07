@@ -3,13 +3,18 @@
 # Note Taker
 An open-source AI note taker 
 
+### Disclaimer
+Currently, only audio transcription works.
+Converting into proper notes will be added within the next few updates
+
 
 ## Live Demo
-Live Demo is coming soon...
+Live Demo is available [here](https://note-taker-week-5-602158df7ec9.herokuapp.com/)!
 
 ## Features
 - AI-powered note-taking with OpenAI whisper-1 integration
 - Limits on how much time a user can record
+    - Each user starts with 200 coins, each coin coresponds to ~1 second of transcription time (its low because it comes out of my credits)
 
 
 ## Instalation
@@ -48,6 +53,13 @@ It will also allow attackers to use your openAI API credits without your knowled
 ```bash
 npm run start
 ```
+
+
+## Screenshots
+
+Home page
+
+![home page](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8858e68eefe271eb1153c6056f7a3b8b8df1e356_screen_shot_2025-10-06_at_11.18.46_pm.png)
 
 
 ## Contributing
