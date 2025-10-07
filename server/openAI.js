@@ -10,7 +10,7 @@ const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
 });
 
-module.exports.transcribeAudio = async (audioPath) => {
+async function transcribeAudio (audioPath) {
     const transcription = await openai.audio.transcriptions.create({
         file: fs.createReadStream(audioPath),
         model: "whisper-1",
@@ -20,3 +20,4 @@ module.exports.transcribeAudio = async (audioPath) => {
 }
 
 
+module.exports = { transcribeAudio };

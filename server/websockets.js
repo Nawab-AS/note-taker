@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const { updateUserCoins } = require('./database.js');
+const { updateUserCoins, getUserCoins } = require('./database.js');
 const fs = require('fs');
 const path = require('path');
 const { transcribeAudio } = require('./openAI.js');
@@ -11,18 +11,30 @@ module.exports = function(app) {
         const rawCookies = socket.handshake.headers.cookie;
         if (!rawCookies) return next(new Error("No cookies found"));
         const cookies = Object.fromEntries(rawCookies.split('; ').map(cookie => cookie.split('=')));
-        const authToken = cookies['authToken'];
+        let authToken = decodeURIComponent(cookies['authToken']);
         if (!authToken) return next(new Error("No auth token found"));
+        const matches = authToken.match(/{.*}/);
+        if (matches) {
+            try {
+                authToken = JSON.parse(matches[0]);
+            } catch (error) {
+                return next(new Error("Invalid auth token"));
+            }
+            socket.username = authToken.username;
+        }
         next();
     });
 
     io.on('connection', (socket) => {
         console.log('a user connected');
 
-        socket.on('audio-blob', (buffer) =>{
+        socket.on('audio-blob', async (buffer) => {
             if (!(buffer instanceof Buffer)) return;
+            console.log(`Received audio blob of size ${buffer.length} bytes from ${socket.username}`);
+            if ((await getUserCoins(socket.username)) <= 0) return;
+
             // Save audio blob to a file
-            const audioPath = path.join(__dirname, '..', 'tempAudio', `audio-${socket.id}-${Date.now()}.webm`);
+            const audioPath = path.join(__dirname, '..', 'tempAudio', `audio-${socket.username}-${Date.now()}.webm`);
             fs.writeFileSync(audioPath, Buffer.from(buffer));
 
             // Approximate the length of the audio file
@@ -46,8 +58,7 @@ module.exports = function(app) {
             });
             console.log("Audio received");
 
-
-
+        
         socket.on('disconnect', () => {
             console.log('user disconnected');
         });
