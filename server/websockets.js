@@ -20,7 +20,6 @@ module.exports = function(app) {
         console.log('a user connected');
 
         socket.on('audio-blob', (buffer) =>{
-            if (!auth) return;
             if (!(buffer instanceof Buffer)) return;
             // Save audio blob to a file
             const audioPath = path.join(__dirname, '..', 'tempAudio', `audio-${socket.id}-${Date.now()}.webm`);
@@ -36,7 +35,6 @@ module.exports = function(app) {
             // Transcribe audio
             transcribeAudio(audioPath).then((transcription) => {
                 socket.emit('transcription', transcription);
-                await 
                 // delete the temporary audio file
                 fs.unlink(audioPath, (err) => {
                     if (err) {

@@ -7,6 +7,10 @@ An open-source AI note taker
 ## Live Demo
 Live Demo is coming soon...
 
+## Features
+- AI-powered note-taking with OpenAI whisper-1 integration
+- Limits on how much time a user can record
+
 
 ## Instalation
 Install using git with
@@ -18,10 +22,13 @@ npm i
 
 
 ## Usage
-1. Create a `.env` file which contains the following
+1. Create a MongoDB cluster with appropriate access conditions (create a user with read/write permissions and allow IP access on your server)
+
+2. Create a `.env` file which contains the following
 ```
 SESSION_SECRET="<insert a session secret>"
 OPENAI_API_KEY="<insert your openAI API key>"
+MONGODB_URI="<insert your MongoDB connection URI>"
 ```
 
 The session secret is random cryptographic key used to authenticate user logins
@@ -37,7 +44,7 @@ PORT=<insert a port number>
 It will also allow attackers to use your openAI API credits without your knowledge.
 
 
-2. Run this command in the terminal to start the server
+3. Run this command in the terminal to start the server
 ```bash
 npm run start
 ```
@@ -48,11 +55,12 @@ Pull requests are welcome, but for major changes, please open an issue to discus
 
 
 ## Roadmap
+- Convert transcriptions into proper notes
+- Save notebooks with MongoDB Atlas
 - Add seperation to notes with 'notebooks'
-    - save notebooks with MongoDB Atlas
 - Connect to MongoDB for login/signup
 - Allow users to add their own API keys
 
 
 ## Questions or Concerns
-For any questions or concerns please email me at nawab-as@hackclub.app
+For any questions or concerns please email me at support@nawab-as.software
