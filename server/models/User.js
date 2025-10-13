@@ -14,11 +14,14 @@ const userSchema = new mongoose.Schema({
   },
     coins: {
     type: Number,
-    required: true,
     default: 200
-  }
+  },
+  Notes: {
+    type: String,
+    default: ""
+  },
 });
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = { User };

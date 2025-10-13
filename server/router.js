@@ -8,7 +8,7 @@ const { join: joinPath } = require("path");
 const { existsSync } = require("fs");
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const { registerUser, validateLogin, getUserCoins } = require('./database');
+const { registerUser, validateLogin, getUserData } = require('./database');
 
 require('dotenv').config();
 
@@ -79,8 +79,8 @@ router.get('/register', redirectToHome, (req, res) => {
 
 router.get('/home', redirectToLogin, async (req, res) => {
 	const username = getAuthData(req).username;
-	const userCoins = await getUserCoins(username);
-	res.render('home/index', {username: username, coins: userCoins});
+	const data = JSON.stringify(await getUserData(username));
+	res.render('home/index', { data });
 });
 
 
@@ -150,7 +150,7 @@ router.use(function (req, res) {
 	if (existsSync(__publicDirname + req.url)) {
 		// send file if path exists
 		if (req.url.endsWith(".html")) { // if request ends with ".html", redirect to path without ".html"
-			//return res.redirect(req.url.slice(0, -5));
+			return res.redirect(req.url.slice(0, -5));
 		}
 
 		res.sendFile(__publicDirname + req.url);

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('./models/User');
+const { User } = require('./models/User');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
@@ -14,7 +14,6 @@ async function connectDB() {
     console.log('Connected to MongoDB with Mongoose!');
   } catch (err) {
     console.error('MongoDB connection error:', err);
-    process.exit(1);
   }
 }
 
@@ -50,11 +49,28 @@ async function getUserCoins(username) {
 
 async function updateUserCoins(username, change) {
   const user = await User.findOne({ username });
-  if (!user) return;
+  if (!user) return null;
 
-  user.coins += change;
-  if (user.coins < 0) user.coins = 0;
+  user.coins = Math.max(0, user.coins + change);
   await user.save();
+  return user.coins;
+}
+
+async function getUserData(username) {
+  const user = await User.findOne({ username });
+  if (!user) return null;
+
+  let data = { username: user.username, coins: user.coins, notes: user.Notes };
+  return data;
+}
+
+async function setUserNotes(username, notes) {
+  const user = await User.findOne({ username });
+  if (!user) return null;
+
+  user.Notes = notes;
+  await user.save();
+  return true;
 }
 
 module.exports = {
@@ -62,4 +78,6 @@ module.exports = {
   validateLogin,
   getUserCoins,
   updateUserCoins,
+  setUserNotes,
+  getUserData,
 };

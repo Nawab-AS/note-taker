@@ -10,8 +10,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const username = "<%- username %>";
-        const initialCoins = <%- coins %>;
+        const userdata = <%- data %>;
     </script>
     
     <script src="home/recorder.js" defer></script>
@@ -33,7 +32,7 @@
     </header>
     <div class="main">
         <div class="island">
-            <button v-if="!isRecording" onclick="startRecording()" :disabled="coins == 0" :class="{'no-coins': coins == 0}">
+            <button v-if="!isRecording" onclick="startRecording()" :disabled="coins == 0" :class="{'button_disabled': coins == 0}">
                 <span v-if="coins == 0">You have no more coins</span>
                 <span v-else>Start Recording</span>
             </button>
@@ -52,10 +51,27 @@
             </div> -->
 
             <div class="transcript">
-                <h2>Transcript</h2>
-                <textarea placeholder="start recording to transcribe audio">{{ transcript }}</textarea>
+                <h2>Raw Transcription</h2>
+                <textarea placeholder="start recording to transcribe audio" v-model="transcript"></textarea>
+            </div>
+
+            <button v-if="!isRecording" onclick="compileNotes()" :class="{'button_disabled': (coins <= estimatedCompilingCost) || (transcript == '') || compiling}" id="compile_notes_button">
+                <span v-if="coins <= estimatedCompilingCost">not enough coins</span>
+                <span v-else-if="transcript.trim().length == 0">You must record a transcript to compile notes</span>
+                <span v-else-if="compiling">Compiling...</span>
+                <span v-else>Compile Notes (estimated cost: {{ estimatedCompilingCost }} coins)</span>
+            </button>
+            <button v-else disabled class="button_disabled">Stop Recording to Compile Notes</button>
+
+            <div class="notes">
+                <h2>Notes</h2>
+                <textarea placeholder="Compile your raw transcription into notes" v-model="notes"></textarea>
             </div>
         </div>
     </div>
+
+    <footer>
+        <h4>&copy; 2025 Note Taker, created by <a href="https://github.com/Nawab-AS">Nawab-AS</a>. All rights reserved.</h4>
+    </footer>
 </body>
 </html>

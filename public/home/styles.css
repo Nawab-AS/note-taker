@@ -90,7 +90,7 @@ button:hover {
     color: #fff;
 }
 
-button.no-coins, button.no-coins:hover {
+button.button_disabled {
     background: #b22222 !important;
     color: #fff !important;
     cursor: not-allowed;
@@ -109,6 +109,11 @@ button.no-coins, button.no-coins:hover {
     color: #fff;
 }
 
+#compile_notes_button {
+    margin-top: 50px;
+}
+
+
 textarea {
     width: 94%;
     height: 45vh;
@@ -121,4 +126,29 @@ textarea {
     resize: none;
     box-shadow: inset 0px 2px 8px rgba(0, 0, 0, 0.2);
     outline: none;
+}
+
+
+
+
+
+footer {
+    background-color: #0f0f0f;
+    height: 2rem;
+    padding: 0px;
+    margin-top: 30px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+footer h4 {
+    margin-top: 0.15rem;
+    padding: 0.4rem;
+}
+
+footer a {
+    color: #05a103;
+    text-decoration: none;
 }
