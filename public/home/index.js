@@ -6,18 +6,18 @@ const isRecording = ref(false);
 const transcript = ref("");
 const coins = ref(userdata.coins);
 const notes = ref("");
-if (userdata.notes) notes.value = userdata.notes;
+if (userdata.notes) notes.value = userdata.notes;``
 const compiling = ref(false);
 
 
 // socket.io client setup
 const socket = io();
 socket.on('connect', () => {
-    console.log('Connected to server via WebSocket');
+    console.log('Connected to websocket server');
 });
 
 socket.on('disconnect', () => {
-    console.log('Disconnected from server');
+    console.log('Disconnected from websocket server');
 });
 
 socket.on('transcription', (data) => {
@@ -41,11 +41,10 @@ async function startRecording() {
         });
 
     startMicRecorder((audioBlob) => {
-        //audioURLs.value.push(URL.createObjectURL(audioBlob)); // for testing
+        //audioURLs.value.push(URL.createObjectURL(audioBlob));
 
-        // send audio blob to server
+        // send audio blob as buffer to server
         audioBlob.arrayBuffer().then(buffer => {
-            // blobs must be converted to ArrayBuffers before sending to server
             socket.emit('audio-blob', buffer);
         });
     });

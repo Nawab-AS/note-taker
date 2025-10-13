@@ -3,7 +3,9 @@ const { User } = require('./models/User');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-// connect to MongoDB
+if (!process.env.MONGODB_URI) throw new Error("MongoDB Atlas URI not set");
+
+// connect to MongoDB atlas
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
@@ -19,7 +21,8 @@ async function connectDB() {
 
 connectDB();
 
-// user functions
+
+// functions
 
 async function registerUser(username, password) {
   try {

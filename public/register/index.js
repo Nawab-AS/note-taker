@@ -8,34 +8,32 @@ const confirmPassword = ref("");
 const error = ref(params.get('error') || '');
 
 
-function validateAndSubmit() {
-    error.value = "";
-    username.value = username.value.trim();
+let previousUsername = '';
+let previousPassword = '';
+setInterval(async () => {
+    if (username.value === previousUsername && password.value === previousPassword) return;
+    previousUsername = username;
+    previousPassword = password;
 
-    if (!username.value) {
-        error.value = "Username is required.";
-        return;
+    const response = await fetch(`/isValid?username=${username.value}&password=${password.value}`);
+    const result = await response.json();
+    
+    error.value = result.valid ? '' : result.reason;
+    if (password.value !== confirmPassword.value && !error.value) {
+        error.value = "Passwords do not match";
     }
-    if (username.value.length < 7) {
-        error.value = "Username must be at least 7 characters.";
-        return;
-    }
-    if (!password.value) {
-        error.value = "Password is required.";
-        return;
-    }
-    if (password.value.length < 6) {
-        error.value = "Password must be at least 6 characters.";
-        return;
-    }
+}, 250);
+
+async function submit() {
+    const response = await fetch(`/isValid?username=${username}&password=${password}`);
+    const result = await response.json();
+    
+    error.value = result.valid ? '' : result.reason;
+    if (error.value) return;
     if (password.value !== confirmPassword.value) {
-        error.value = "Passwords do not match.";
+        error.value = "Passwords do not match";
         return;
     }
-
-
-    // If all validations pass, submit the form
-    error.value = "";
     document.getElementById('form').submit();
 }
 
@@ -46,7 +44,7 @@ createApp({
 			password,
 			confirmPassword,
 			error,
-			validateAndSubmit
+			submit
 		};
 	}
 }).mount('body');

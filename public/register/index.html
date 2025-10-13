@@ -11,7 +11,7 @@
 <body>
 	<h1>Note Taker</h1>
 	<div class="form">
-		<form @submit.prevent="validateAndSubmit" method="POST" id="form">
+		<form @submit.prevent="submit" method="POST" id="form">
 			<h2>Register</h2>
 			<p id="error">{{ error }}</p>
 			<h3>Username</h3>

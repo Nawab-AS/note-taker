@@ -3,24 +3,26 @@ const { updateUserCoins, getUserCoins, setUserNotes } = require('./database.js')
 const fs = require('fs');
 const path = require('path');
 const { transcribeAudio, compileNotes } = require('./openAI.js');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 module.exports = function(app) {
     const io = new Server(app, { cookie: true });
 
-    io.use(async (socket, next) => {
+    io.use(async (socket, next) => { // authenticate websocket with JWT
         const rawCookies = socket.handshake.headers.cookie;
         if (!rawCookies) return next(new Error("No cookies found"));
+
         const cookies = Object.fromEntries(rawCookies.split('; ').map(cookie => cookie.split('=')));
         let authToken = decodeURIComponent(cookies['authToken']);
         if (!authToken) return next(new Error("No auth token found"));
-        const matches = authToken.match(/{.*}/);
-        if (matches) {
-            try {
-                authToken = JSON.parse(matches[0]);
-            } catch (error) {
-                return next(new Error("Invalid auth token"));
-            }
-            socket.username = authToken.username;
+        try {
+            const decoded = jwt.verify(authToken, SESSION_SECRET);
+            socket.username = decoded.username;
+        } catch (error) {
+            return next(new Error("Invalid auth token"));
         }
         next();
     });
@@ -65,7 +67,6 @@ module.exports = function(app) {
             if ((await getUserCoins(socket.username)) <= 0) return;
 
             console.log(`Compiling notes for user ${socket.username}`);
-
             const compiledNotes = await compileNotes(transcript);
 
             // cost is 0.05 coins per word/newline of both the transcript and the compiled notes

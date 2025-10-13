@@ -1,12 +1,9 @@
-// routes all http requests
-
-// TODO: use mongoDB atlas for file storage
-
 const express = require('express');
 const router = express.Router();
 const { join: joinPath } = require("path");
 const { existsSync } = require("fs");
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const { registerUser, validateLogin, getUserData } = require('./database');
 
@@ -14,30 +11,30 @@ require('dotenv').config();
 
 
 // tokens
-
 const SESSION_SECRET = process.env.SESSION_SECRET;
 if (SESSION_SECRET == undefined) throw new Error("No session secret set");
 
 const cookieOptions = {
-	signed: true,
-	HttpOnly: true,
+	httpOnly: true,
 	maxAge: 1000 * 60 * 60 * 24 * 3 // 3 days -> ms
 };
 
 function createAuthToken(data, res) {
-	res.cookie("authToken", data, cookieOptions);
+	const token = jwt.sign(data, SESSION_SECRET, { expiresIn: '3d' });
+	res.cookie('authToken', token, cookieOptions);
 }
 
 function getAuthData(req) {
-	return req.signedCookies.authToken;
+	const token = req.cookies && req.cookies.authToken;
+	if (!token) return null;
+
+	return jwt.verify(token, SESSION_SECRET).catch(err => { return null;});
 }
 
 
 // middleware
 
-router.use(cookieParser(SESSION_SECRET)); // signed auth tokens
-
-// for parsing post requests
+router.use(cookieParser());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
@@ -56,7 +53,6 @@ const redirectToHome = (req, res, next) => {
 		next();
 	}
 };
-
 
 
 
@@ -91,8 +87,7 @@ router.post('/login', async (req, res) => {
 	const { username, password } = req.body;
 
 	try {
-		const isValid = await validateLogin(username, password);
-		if (!isValid) {
+		if (!(await validateLogin(username, password))) {
 			return res.redirect('/login?error=Invalid%20credentials');
 		}
 
@@ -112,12 +107,18 @@ router.post('/logout', (req, res) => {
 	res.redirect('/');
 });
 
+router.get('/isValid', (req, res) => {
+	const { username, password } = req.query;
+	res.json(validateSignupData(username.trim(), password.trim()));
+});
 
 // register route
 router.post('/register', async (req, res) => {
-	const { username, password } = req.body;
+	let { username, password } = req.body;
+	username = username.trim();
+	password = password.trim();
 
-	if (!validateSignupData(username, password)) {
+	if (!validateSignupData(username, password).valid) {
 		return res.redirect('/register?error=Invalid%20input');
 	}
 
@@ -136,12 +137,22 @@ router.post('/register', async (req, res) => {
 });
 
 function validateSignupData(username, password) {
-	if (!username) return false;
-	if (username.length < 7) return false;
-	if (!password) return false;
-	if (password.length < 6) return false;
+	// username
+	if (!username || typeof username != "string") return { valid: false, reason: "Enter a username" };
+    if (username.length < 7) return {valid: false, reason: "Username must be at least 7 characters long"};
+    if (username.length > 20) return {valid: false, reason: "Username must be less than 20 characters long"};
+    if (!/^[a-z0-9_-]+$/.test(username)) return {valid: false, reason: "Username can only contain lowercase letters, numbers, underscores and hyphens"}
+    if (username.includes("admin") || username.includes("administrator")) return {valid: false, reason: "Username is not allowed"};
 
-	return true;
+    // password
+    if (!password || typeof password != "string") return { valid: false, reason: "Enter a password" };
+    if (password.length < 7) return {valid: false, reason: "Password must be at least 7 characters long"};
+    if (password.length > 20) return {valid: false, reason: "Password must be less than 20 characters long"};
+    if (!/^[a-zA-Z0-9_]+$/.test(password)) return {valid: false, reason: "Password can only contain lowercase letters, numbers and underscores"};
+    if (password == username) return {valid: false, reason: "Password cannot be the same as username"};
+
+
+    return {valid: true, reason: ""};
 }
 
 

@@ -15,7 +15,7 @@ Live Demo is available [here](https://note-taker-week-5-602158df7ec9.herokuapp.c
     - Each user starts with 200 coins, each coin coresponds to ~1 second of transcription time (its low because it comes out of my credits)
 
 
-## Instalation
+## Installation
 Install using git with
 ```bash
 git clone https://github.com/Nawab-AS/note-taker
@@ -25,13 +25,13 @@ npm i
 
 
 ## Usage
-1. Create a MongoDB cluster with appropriate access conditions (create a user with read/write permissions and allow IP access on your server)
+1. Create a MongoDB Atlas cluster with appropriate access conditions (create a user with read/write permissions and allow IP access on your server)
 
 2. Create a `.env` file which contains the following
 ```
 SESSION_SECRET="<insert a session secret>"
 OPENAI_API_KEY="<insert your openAI API key>"
-MONGODB_URI="<insert your MongoDB connection URI>"
+MONGODB_URI="<insert your MongoDB Atlas connection URI>"
 ```
 
 The session secret is random cryptographic key used to authenticate user logins
