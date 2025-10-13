@@ -7,7 +7,7 @@ Converting into proper notes will be added within the next few updates
 
 
 ## Live Demo
-Live Demo is available [here](https://note-taker-week-5-602158df7ec9.herokuapp.com/)!
+Live Demo is available [here](https://note-taker.nawab-as.software)!
 
 ## Features
 - AI-powered note-taking with OpenAI whisper-1 integration
