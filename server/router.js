@@ -28,7 +28,11 @@ function getAuthData(req) {
 	const token = req.cookies && req.cookies.authToken;
 	if (!token) return null;
 
-	return jwt.verify(token, SESSION_SECRET).catch(err => { return null;});
+	try {
+		return jwt.verify(token, SESSION_SECRET);
+	} catch (err) {
+		return null;
+	}
 }
 
 

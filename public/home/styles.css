@@ -1,51 +1,48 @@
 body {
-    background: linear-gradient(135deg, #232526 0%, #404348 100%);
-    color: #f5f5f5;
+    background: #f7faff;
+    color: #333;
     min-height: 100vh;
     margin: 0;
     font-family: 'Roboto', Arial, sans-serif;
 }
 
 header {
-    background: #252525;
+    background: #ffffff;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    border-bottom: 4px solid #d3d3d3;
 }
 
 header h3 {
     margin: 0;
-    color: #61dafb;
+    color: #333;
     letter-spacing: 1px;
-
     display: flex;
     align-items: center;
-    margin: 0;
 }
 
 header .username {
     margin-left: 8px;
     font-weight: normal;
-    color: #6185fb;
+    color: #555;
 }
 
 header .coins {
     margin-left: 14px;
     font-size: 1rem;
-    color: #ffd700;
+    color: #333;
     font-weight: bold;
     letter-spacing: 0.5px;
 }
 
-
 header img {
-    width:21px;
-    height:21px;
-    vertical-align:middle;
-    margin-left:8px;
+    width: 21px;
+    height: 21px;
+    vertical-align: middle;
+    margin-left: 8px;
 }
-
 
 .main {
     display: flex;
@@ -56,9 +53,9 @@ header img {
 
 .island {
     margin: 40px auto;
-    background: rgba(40, 44, 52, 0.95);
+    background: #ffffff;
     border-radius: 18px;
-    box-shadow: -5px -5px 40px 0 rgba(31, 38, 135, 0.9);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     padding: 3rem 2.5rem;
     width: 75%;
 }
@@ -66,7 +63,7 @@ header img {
 h1 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #61dafb;
+    color: #58cc02;
     font-size: 2.2rem;
     letter-spacing: 2px;
     cursor: default;
@@ -76,17 +73,17 @@ button {
     width: 100%;
     padding: 0.7rem 1rem;
     border: none;
-    border-radius: 6px;
-    background: #232526;
-    color: #f5f5f5;
+    border-radius: 20px;
+    background: #58cc02;
+    color: #fff;
     font-size: 1.1rem;
     cursor: pointer;
     transition-duration: 0.2s;
-    box-shadow: 0px 2px 8px rgba(97, 218, 251, 0.08);
+    box-shadow: 0px 2px 8px rgba(88, 204, 2, 0.3);
 }
 
 button:hover {
-    background: #21a1f3;
+    background: #45a700;
     color: #fff;
 }
 
@@ -96,16 +93,16 @@ button.button_disabled {
     cursor: not-allowed;
 }
 
-
 #logout_button {
     margin-left: 10px;
     height: 30px;
     padding: 0px 10px;
-    background: #00568b;
+    background: #ff5722;
+    border-radius: 15px;
 }
 
 #logout_button:hover {
-    background: #007acc;
+    background: #e64a19;
     color: #fff;
 }
 
@@ -113,34 +110,29 @@ button.button_disabled {
     margin-top: 50px;
 }
 
-
 textarea {
     width: 94%;
     height: 45vh;
     padding: 1rem;
     border: none;
-    border-radius: 8px;
-    background: #1e1e1e;
-    color: #f5f5f5;
+    border-radius: 12px;
+    background: #f0f8e7;
+    color: #333;
     font-size: 1rem;
     resize: none;
-    box-shadow: inset 0px 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 2px 8px rgba(0, 0, 0, 0.1);
     outline: none;
 }
 
-
-
-
-
 footer {
-    background-color: #0f0f0f;
+    background-color: #58cc02;
     height: 2rem;
     padding: 0px;
     margin-top: 30px;
     width: 100%;
     text-align: center;
     font-size: 0.9rem;
-    color: #888;
+    color: #fff;
 }
 
 footer h4 {
@@ -149,6 +141,6 @@ footer h4 {
 }
 
 footer a {
-    color: #05a103;
-    text-decoration: none;
+    color: #fff;
+    text-decoration: underline;
 }

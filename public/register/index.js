@@ -18,22 +18,21 @@ setInterval(async () => {
     const response = await fetch(`/isValid?username=${username.value}&password=${password.value}`);
     const result = await response.json();
     
-    error.value = result.valid ? '' : result.reason;
-    if (password.value !== confirmPassword.value && !error.value) {
+    error.value = result.reason || '';
+    if (password.value !== confirmPassword.value && error.value == '') {
         error.value = "Passwords do not match";
     }
 }, 250);
 
 async function submit() {
-    const response = await fetch(`/isValid?username=${username}&password=${password}`);
-    const result = await response.json();
-    
-    error.value = result.valid ? '' : result.reason;
-    if (error.value) return;
     if (password.value !== confirmPassword.value) {
         error.value = "Passwords do not match";
         return;
     }
+    const response = await fetch(`/isValid?username=${username.value}&password=${password.value}`);
+    const result = await response.json();
+    
+    if (!result.valid) return;
     document.getElementById('form').submit();
 }
 

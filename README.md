@@ -57,7 +57,7 @@ npm run start
 
 Home page
 
-![home page](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8858e68eefe271eb1153c6056f7a3b8b8df1e356_screen_shot_2025-10-06_at_11.18.46_pm.png)
+![home page](https://ec52f53a29e871d45d4f0e4c2c3cc187.r2.cloudflarestorage.com/siege-mahadk/rs81t39xxeit6b4m3sd7wveuiqbh?response-content-disposition=inline%3B%20filename%3D%22Screen%20Shot%202025-10-13%20at%207.46.45%20PM.png%22%3B%20filename%2A%3DUTF-8%27%27Screen%2520Shot%25202025-10-13%2520at%25207.46.45%2520PM.png&response-content-type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=d7cf99256938357bf3eaa33a12e24908%2F20251013%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20251013T234912Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=11097210e01fb5226ce654ba0105be59c02f084f891ee0012e7ea159419de4dc)
 
 
 ## Contributing
