@@ -22,7 +22,7 @@ async function transcribeAudio (audioPath) {
 
 async function compileNotes (transcript) {
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-5",
         messages: [
             { role: "system", content: "You are an assistant that compiles transcripts into notes (in markdown). Please note that there may be background chatter, tangents, reminders, etc in the audio that may or may not be relevant to the main content, don't highlight/emphasize it." },
             { role: "user", content: `Transcript:\n${transcript}` }
