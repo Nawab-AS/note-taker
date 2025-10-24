@@ -1,35 +1,44 @@
-const OpenAI = require("openai");
-const fs = require("fs");
-require("dotenv").config();
+import OpenAI from "openai";
+import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
+
+const SPEECH_TO_TEXT_MODEL = "whisper-1";
+const TEXT_COMPLETION_MODEL = "gpt-4.1-mini";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (OPENAI_API_KEY == undefined) throw new Error("No OpenAI API key set");
 
 
-const openai = new OpenAI({
+const client = new OpenAI({
     apiKey: OPENAI_API_KEY,
 });
 
 async function transcribeAudio (audioPath) {
-    const transcription = await openai.audio.transcriptions.create({
+    const transcription = await client.audio.transcriptions.create({
         file: fs.createReadStream(audioPath),
-        model: "whisper-1",
+        model: SPEECH_TO_TEXT_MODEL,
         response_format: "text"
     });
     return transcription;
 }
 
-
-async function compileNotes (transcript) {
-    const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-            { role: "system", content: "You are an assistant that compiles transcripts into notes (in markdown). Please note that there may be background chatter, tangents, reminders, etc in the audio that may or may not be relevant to the main content, don't highlight/emphasize it." },
-            { role: "user", content: `Transcript:\n${transcript}` }
-        ]
+const promptTemplate = fs.readFileSync("server/prompt.txt", "utf-8");
+async function compileNotes (transcript, previousNotes) {
+    const response = await client.responses.create({
+        model: TEXT_COMPLETION_MODEL,
+        input: [
+            { role: "system", content: promptTemplate },
+            { role: "system", content: `Previous Notes:\n${previousNotes}` },
+            { role: "user", content: `Transcript:\n${transcript}` },
+        ],
+        text: {
+            verbosity: "medium",
+        },
+        temperature: 0.7,
     });
-    return response.choices[0].message.content.trim();
+    return response.output_text;
 }
 
 
-module.exports = { transcribeAudio, compileNotes };
+export { transcribeAudio, compileNotes };

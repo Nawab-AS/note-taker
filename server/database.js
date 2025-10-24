@@ -83,4 +83,5 @@ module.exports = {
   updateUserCoins,
   setUserNotes,
   getUserData,
+  sanitizeData: mongoose.sanitizeFilter,
 };
