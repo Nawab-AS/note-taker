@@ -2,9 +2,10 @@ const { createApp, ref, watch } = Vue;
 
 const isRecording = ref(false);
 const transcript = ref("");
-const tokens = ref(userdata.tokens);
+const tokens = ref("");
 const notes = ref("");
 if (userdata.notes) notes.value = userdata.notes;
+if (userdata.tokens) tokens.value = userdata.tokens;
 if (userdata.transcript) transcript.value = userdata.transcript;
 const compiling = ref(false);
 
@@ -76,16 +77,14 @@ socket.on('compiled-notes', (data) => {
 });
 
 
-let previousNotes = "";
-let previousTranscript = "";
-function SaveNotes() {
-    if (notes.value != previousNotes) socket.emit('update-notes', notes.value);
-    if (transcript.value != previousTranscript) socket.emit('update-transcript', transcript.value);
-}
-// save notes every 10 seconds or when the page is closed
-setInterval(SaveNotes, 10000);
-window.addEventListener('beforeunload', SaveNotes);
+watch(notes, (newVal) => {
+    socket.emit('update-notes', newVal);
+});
 
+
+watch(transcript, (newVal) => {
+    socket.emit('update-transcript', newVal);
+});
 
 // mount Vue app
 
