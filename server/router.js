@@ -5,7 +5,7 @@ const { existsSync } = require("fs");
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const { registerUser, validateLogin, getUserData, sanitizeData } = require('./database');
+const { registerUser, validateLogin, getUserData } = require('./database');
 
 require('dotenv').config();
 
@@ -88,7 +88,7 @@ router.get('/home', redirectToLogin, async (req, res) => {
 
 // Login route
 router.post('/login', async (req, res) => {
-	const { username, password } = sanitizeData(req.body);
+	const { username, password } = req.body;
 
 	try {
 		if (!(await validateLogin(username, password))) {
@@ -99,7 +99,7 @@ router.post('/login', async (req, res) => {
 		createAuthToken({ username }, res);
 		res.redirect('/home');
 	} catch (error) {
-		console.error('Error during login:', error);
+		console.error('Error during login:', error.message);
 		res.redirect('/login?error=Server%20error');
 	}
 });
@@ -111,8 +111,8 @@ router.post('/logout', (req, res) => {
 	res.redirect('/');
 });
 
-router.get('/isValid', (req, res) => {
-	const { username, password } = sanitizeData(req.body);
+router.post('/isValid', (req, res) => {
+	const { username, password } = req.body;
 	res.json(validateSignupData(username.trim(), password.trim()));
 });
 

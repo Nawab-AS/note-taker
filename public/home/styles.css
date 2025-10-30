@@ -1,3 +1,7 @@
+[v-cloak] {
+    display: none;
+}
+
 body {
     background: #f7faff;
     color: #333;
@@ -29,7 +33,7 @@ header .username {
     color: #555;
 }
 
-header .coins {
+header .tokens {
     margin-left: 14px;
     font-size: 1rem;
     color: #333;
