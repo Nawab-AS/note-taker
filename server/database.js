@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { User } = require('./models/User');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+mongoose.set('sanitizeProjection', true);
 
 if (!process.env.MONGODB_URI) throw new Error("MongoDB Atlas URI not set");
 
@@ -15,7 +16,7 @@ async function connectDB() {
     });
     console.log('Connected to MongoDB with Mongoose!');
   } catch (err) {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error:', err.message);
   }
 }
 
@@ -43,27 +44,27 @@ async function validateLogin(username, password) {
   return (await bcrypt.compare(password, user.password));
 }
 
-async function getUserCoins(username) {
+async function getUserTokens(username) {
   const user = await User.findOne({ username });
   if (!user) return null;
 
-  return user.coins;
+  return user.tokens;
 }
 
-async function updateUserCoins(username, change) {
+async function updateUserTokens(username, change) {
   const user = await User.findOne({ username });
   if (!user) return null;
 
-  user.coins = Math.max(0, user.coins + change);
+  user.tokens = Math.max(0, user.tokens + change);
   await user.save();
-  return user.coins;
+  return user.tokens;
 }
 
 async function getUserData(username) {
   const user = await User.findOne({ username });
   if (!user) return null;
 
-  let data = { username: user.username, coins: user.coins, notes: user.Notes };
+  let data = { username: user.username, tokens: user.tokens, notes: user.Notes, transcript: user.Transcript };
   return data;
 }
 
@@ -76,12 +77,21 @@ async function setUserNotes(username, notes) {
   return true;
 }
 
+async function setUserTranscript(username, transcript) {
+  const user = await User.findOne({ username });
+  if (!user) return null;
+
+  user.Transcript = transcript;
+  await user.save();
+  return true;
+}
+
 module.exports = {
   registerUser,
   validateLogin,
-  getUserCoins,
-  updateUserCoins,
+  getUserTokens,
+  updateUserTokens,
   setUserNotes,
   getUserData,
-  sanitizeData: mongoose.sanitizeFilter,
+  setUserTranscript,
 };

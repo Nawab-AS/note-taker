@@ -17,10 +17,10 @@
     <script src="home/index.js" defer></script>
     <link rel="stylesheet" href="home/styles.css">
 </head>
-<body>
+<body v-cloak>
     <header>
         <h3>Note Taker</h3>
-        <h3 class="coins">{{ coins }} coin<span v-if="coins !== 1">s</span>&nbsp;left</h3>
+        <h3 class="tokens">{{ tokens }} token<span v-if="tokens !== 1">s</span>&nbsp;left</h3>
         <h3>
             Howdy, 
             <span class="username">{{ username }}</span>
@@ -32,34 +32,22 @@
     </header>
     <div class="main">
         <div class="island">
-            <button v-if="!isRecording" onclick="startRecording()" :disabled="coins == 0" :class="{'button_disabled': coins == 0}">
-                <span v-if="coins == 0">You have no more coins</span>
+            <button v-if="!isRecording" onclick="startRecording()" :disabled="tokens == 0" :class="{'button_disabled': tokens == 0}">
+                <span v-if="tokens == 0">You have no more tokens</span>
                 <span v-else>Start Recording</span>
             </button>
             <button v-else onclick="stopRecording()">Stop Recording</button>
-
-            <!-- 
-            -- for testing --
-            <div>
-                <h2>Recorded Audio Clips</h2>
-                <ul>
-                    <li v-for="(url, index) in audioURLs" :key="index">
-                        <p>Clip {{ index + 1 }}</p>
-                        <audio :src="url" controls></audio>
-                    </li>
-                </ul>
-            </div> -->
 
             <div class="transcript">
                 <h2>Raw Transcription</h2>
                 <textarea placeholder="start recording to transcribe audio" v-model="transcript"></textarea>
             </div>
 
-            <button v-if="!isRecording" onclick="compileNotes()" :class="{'button_disabled': (coins <= estimatedCompilingCost) || (transcript == '') || compiling}" id="compile_notes_button">
-                <span v-if="coins <= estimatedCompilingCost">not enough coins</span>
+            <button v-if="!isRecording" onclick="compileNotes()" :class="{'button_disabled': (tokens <= 10) || (transcript == '') || compiling}" id="compile_notes_button">
+                <span v-if="tokens <= 10">not enough tokens</span>
                 <span v-else-if="transcript.trim().length == 0">You must record a transcript to compile notes</span>
                 <span v-else-if="compiling">Compiling...</span>
-                <span v-else>Compile Notes (estimated cost: {{ estimatedCompilingCost }} coins)</span>
+                <span v-else>Compile Notes (10 tokens)</span>
             </button>
             <button v-else disabled class="button_disabled">Stop Recording to Compile Notes</button>
 

@@ -12,11 +12,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
-    coins: {
+  tokens: {
     type: Number,
     default: 200
   },
   Notes: {
+    type: String,
+    default: ""
+  },
+  Transcript: {
     type: String,
     default: ""
   },

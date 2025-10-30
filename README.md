@@ -1,10 +1,6 @@
 # Note Taker
 An open-source AI note taker 
 
-### Disclaimer
-Currently, only audio transcription works.
-Converting into proper notes will be added within the next few updates
-
 
 ## Live Demo
 Live Demo is available [here](https://note-taker.nawab-as.software)!
@@ -12,7 +8,7 @@ Live Demo is available [here](https://note-taker.nawab-as.software)!
 ## Features
 - AI-powered note-taking with OpenAI whisper-1 integration
 - Limits on how much time a user can record
-    - Each user starts with 200 coins, each coin coresponds to ~1 second of transcription time (its low because it comes out of my credits)
+    - Each user starts with 200 tokens, each second of transcription time costing ~12 tokens
 
 
 ## Installation

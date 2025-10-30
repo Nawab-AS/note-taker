@@ -1,12 +1,11 @@
-const { createApp, ref, computed } = Vue;
+const { createApp, ref, watch } = Vue;
 
-quietnessThreshold = 0.10;
 const isRecording = ref(false);
-//const audioURLs = ref([]);
 const transcript = ref("");
-const coins = ref(userdata.coins);
+const tokens = ref(userdata.tokens);
 const notes = ref("");
-if (userdata.notes) notes.value = userdata.notes;``
+if (userdata.notes) notes.value = userdata.notes;
+if (userdata.transcript) transcript.value = userdata.transcript;
 const compiling = ref(false);
 
 
@@ -24,12 +23,16 @@ socket.on('transcription', (data) => {
     transcript.value += data.transcription + " ";
     console.log(`Updated transcript (${transcript.value} characters)`);
 
-    coins.value = data.newCoinBalance;
+    tokens.value = data.newTokenBalance;
+    if (stopping) {
+        isRecording.value = false;
+        stopping = false;
+    }
+
 });
 
 
 // Audio recording setup
-
 async function startRecording() {
     isRecording.value = true;
     await setupMicStream()
@@ -41,49 +44,43 @@ async function startRecording() {
         });
 
     startMicRecorder((audioBlob) => {
-        //audioURLs.value.push(URL.createObjectURL(audioBlob));
-
-        // send audio blob as buffer to server
         audioBlob.arrayBuffer().then(buffer => {
             socket.emit('audio-blob', buffer);
         });
     });
 }
 
+let stopping = false;
 function stopRecording() {
-    isRecording.value = false;
+    stopping = true;
     stopMicRecorder();
 }
 
-let tempNotes = "";
+
 function compileNotes() {
-    if (coins.value <= estimatedCompilingCost.value) return;
+    if (tokens.value <= 10) return;
     if (transcript.value.trim().length == 0) return;
     compiling.value = true;
-    tempNotes = notes.value + "\n\n";
-    notes.value = "Compiling notes...";
-    socket.emit('compile-notes', transcript.value);
+    socket.emit('compile-notes', { transcript: transcript.value, previousNotes: notes.value });
+    transcript.value = "";
 }
 
-estimatedCompilingCost = computed(() => {
-    if (transcript.value.trim().length == 0) return 0;
-    return Math.max(Math.ceil(transcript.value.split(/[\s\n]+/).length * 1.2 * 0.05), 20);
-});
 
 
 socket.on('compiled-notes', (data) => {
     console.log("Received compiled notes from server", data);
-    notes.value = tempNotes + data.compiledNotes;
-    coins.value = data.newCoinBalance;
+    notes.value = data.compiledNotes;
+    tokens.value = data.newTokenBalance;
     compiling.value = false;
     console.log("Notes compiled");
 });
 
 
 let previousNotes = "";
+let previousTranscript = "";
 function SaveNotes() {
-    if (notes.value === previousNotes) return;
-    socket.emit('update-notes', notes.value);
+    if (notes.value != previousNotes) socket.emit('update-notes', notes.value);
+    if (transcript.value != previousTranscript) socket.emit('update-transcript', transcript.value);
 }
 // save notes every 10 seconds or when the page is closed
 setInterval(SaveNotes, 10000);
@@ -99,13 +96,11 @@ createApp({
             startRecording,
             stopRecording,
             username: userdata.username,
-            //audioURLs,
             transcript,
-            coins,
+            tokens,
             compileNotes,
             notes,
             compiling,
-            estimatedCompilingCost,
         };
     }
 }).mount('body');

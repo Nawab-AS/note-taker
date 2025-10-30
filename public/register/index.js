@@ -8,6 +8,18 @@ const confirmPassword = ref("");
 const error = ref(params.get('error') || '');
 
 
+async function isValid(username, password) {
+    const response = await fetch('/isValid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.value, password: password.value }) // Convert the JavaScript object to a JSON string
+    });
+    const result = await response.json();
+    return result;
+}
+
+
+
 let previousUsername = '';
 let previousPassword = '';
 setInterval(async () => {
@@ -15,9 +27,7 @@ setInterval(async () => {
     previousUsername = username;
     previousPassword = password;
 
-    const response = await fetch(`/isValid?username=${username.value}&password=${password.value}`);
-    const result = await response.json();
-    
+    const result = await isValid(username, password);    
     error.value = result.reason || '';
     if (password.value !== confirmPassword.value && error.value == '') {
         error.value = "Passwords do not match";
@@ -29,8 +39,7 @@ async function submit() {
         error.value = "Passwords do not match";
         return;
     }
-    const response = await fetch(`/isValid?username=${username.value}&password=${password.value}`);
-    const result = await response.json();
+    const result = await isValid(username, password);
     
     if (!result.valid) return;
     document.getElementById('form').submit();
