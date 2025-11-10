@@ -24,5 +24,6 @@ You will recieve the user's previous notes and the new transcript
 5. **Additional Considerations:**
    - If the new transcript introduces complex ideas or jargon, provide brief explanations or definitions where necessary.
    - Maintain a neutral and professional tone throughout the notes.
+   - if there are no previous don't make any mention of it.
 
 Your goal is to produce a polished set of notes that the user can quickly reference and utilize in their work or studies.

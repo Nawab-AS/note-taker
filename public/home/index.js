@@ -62,8 +62,7 @@ function compileNotes() {
     if (tokens.value <= 10) return;
     if (transcript.value.trim().length == 0) return;
     compiling.value = true;
-    socket.emit('compile-notes', { transcript: transcript.value, previousNotes: notes.value });
-    transcript.value = "";
+    socket.emit('compile-notes', transcript.value, notes.value);
 }
 
 
@@ -73,6 +72,7 @@ socket.on('compiled-notes', (data) => {
     notes.value = data.compiledNotes;
     tokens.value = data.newTokenBalance;
     compiling.value = false;
+    transcript.value = "";
     console.log("Notes compiled");
 });
 

@@ -29,7 +29,7 @@ async function compileNotes (transcript, previousNotes) {
         model: TEXT_COMPLETION_MODEL,
         input: [
             { role: "system", content: promptTemplate },
-            { role: "system", content: `Previous Notes:\n${previousNotes}` },
+            { role: "user", content: `Previous Notes:\n${previousNotes}` },
             { role: "user", content: `Transcript:\n${transcript}` },
         ],
         text: {
