@@ -1,7 +1,6 @@
 const { Server } = require('socket.io');
 const { updateUserTokens, getUserTokens, setUserNotes, setUserTranscript } = require('./database.js');
 const fs = require('fs');
-const { parseFile } = require('music-metadata');
 const path = require('path');
 const { transcribeAudio, compileNotes } = require('./openAI.js');
 const jwt = require('jsonwebtoken');
@@ -9,7 +8,7 @@ require('dotenv').config();
 
 
 const SESSION_SECRET = process.env.SESSION_SECRET;
-const TOKENS_PER_MINUTE = 10;
+const TOKENS_PER_MINUTE = process.env.TOKENS_PER_MINUTE || 10;
 
 module.exports = function(app) {
     const io = new Server(app, { cookie: true });
@@ -40,11 +39,11 @@ module.exports = function(app) {
             // Save audio blob to a file
             const audioPath = path.join(__dirname, '..', 'tempAudio', `audio-${socket.username}-${Date.now()}.webm`);
             fs.writeFileSync(audioPath, Buffer.from(buffer));
-            console.log(`recieved audio from ${socket.username}:  ${audioPath}`);
-
+            
             // Deduct tokens based on audio duration
-            const cost = ((await parseFile(audioPath)).format.duration) * (TOKENS_PER_MINUTE / 60);
+            const cost = (TOKENS_PER_MINUTE / 4); // each recording is 15 seconds
             if ((await getUserTokens(socket.username)) <= cost) return;
+            console.log(`Processing audio from ${socket.username}    cost: ${cost}    ${audioPath}`);
 
             // Transcribe audio
             const transcription = await transcribeAudio(audioPath);
