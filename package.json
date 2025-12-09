@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@mohtasham/md-to-docx": "^2.5.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",

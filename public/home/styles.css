@@ -114,6 +114,16 @@ button.button_disabled {
     margin-top: 50px;
 }
 
+#export_notes_button {
+    text-decoration: none;
+    display: block;
+    margin-top: 20px;
+}
+
+#export_notes_button button {
+    margin: 0;
+}
+
 textarea {
     width: 94%;
     height: 45vh;

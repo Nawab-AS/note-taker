@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const { registerUser, validateLogin, getUserData } = require('./database');
+const { convertMarkdownToDocx } = require('@mohtasham/md-to-docx');
 
 require('dotenv').config();
 
@@ -159,6 +160,28 @@ function validateSignupData(username, password) {
     return {valid: true, reason: ""};
 }
 
+// Export notes as DOCX
+router.get('/export-notes', redirectToLogin, async (req, res) => {
+	try {
+		const username = getAuthData(req).username;
+		const userData = await getUserData(username);
+		
+		if (!userData || !userData.notes) {
+			return res.status(400).send('No notes found to export');
+		}
+
+		const blob = await convertMarkdownToDocx(userData.notes);
+		const buffer = Buffer.from(await blob.arrayBuffer());
+		
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		res.setHeader('Content-Disposition', 'attachment; filename="notes.docx"');
+		
+		res.send(buffer);
+	} catch (error) {
+		console.error('Error exporting notes:', error);
+		res.status(500).send('Error exporting notes');
+	}
+});
 
 // serve static files from public directory
 router.use(function (req, res) {

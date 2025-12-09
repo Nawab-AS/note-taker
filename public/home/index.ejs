@@ -9,6 +9,9 @@
     <!-- Socket.IO -->
     <script src="/socket.io/socket.io.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
+
     <script>
         const userdata = <%- data %>;
     </script>
@@ -57,6 +60,13 @@
                 <h2>Notes</h2>
                 <textarea placeholder="Compile your raw transcription into notes" v-model="notes" :readOnly="compiling"></textarea>
             </div>
+
+            <a href="/export-notes" id="export_notes_button" download="notes.docx">
+                <button :class="{'button_disabled': notes.trim().length == 0}">
+                    <span v-if="notes.trim().length == 0">You must compile notes to export</span>
+                    <span v-else>Export Notes as DOCX</span>
+                </button>
+            </a>
         </div>
     </div>
 
